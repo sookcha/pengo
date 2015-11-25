@@ -16,6 +16,7 @@ gem 'coffee-rails', '~> 4.1.0'
 
 gem 'remotipart'
 gem 'nokogiri'
+gem 'render_csv'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

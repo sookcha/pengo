@@ -127,6 +127,8 @@ GEM
     rake (10.4.2)
     rdoc (4.2.0)
     remotipart (1.2.1)
+    render_csv (2.0.0)
+      rails (>= 3.0)
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
     ruby_parser (3.7.2)
@@ -183,6 +185,7 @@ DEPENDENCIES
   normalize-rails
   rails (= 4.2.4)
   remotipart
+  render_csv
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   spring

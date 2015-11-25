@@ -2,7 +2,6 @@ class ProfileController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [:save]
   
   def index
-    
   end
   
   def update
@@ -21,6 +20,7 @@ class ProfileController < ApplicationController
         
     payment = search[6].text.to_s.split("비고")[1].to_s
     nPayment = payment.split("\\r\\n\\r\\n").drop(1)
+        
     nPayment.each do |p|
       budget = Budget.new
       if p.split("\\r\\n")[2].to_s != ""
@@ -45,5 +45,13 @@ class ProfileController < ApplicationController
     
     render :text => "Done"
     redirect_to "/dashboard"
+  end
+  def data
+    @budget = Budget.where(:user_id => 1)
+    respond_to do |format|
+      format.csv {
+        render :csv => @budget, :only => [:trans_store,:trans_amount]
+      }
+    end
   end
 end

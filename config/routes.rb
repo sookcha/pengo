@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
   get 'profile/update'
+  get '/profile/data', :defaults => {:format => 'csv'}
 
   devise_for :users
   
