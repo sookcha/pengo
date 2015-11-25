@@ -5,16 +5,9 @@
 %script{:src => "http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"}
 %script{:src => "/xeit/js/deps/srcdoc-polyfill/srcdoc-polyfill.min.js"}
 %script{:src => "/xeit/js/xeit.js"}
-%link{:rel=>"stylesheet", :href=>"https://necolas.github.io/normalize.css/3.0.2/normalize.css"}
+%link{:rel=>"stylesheet", :href=>"/assets/dashboard.css"}
+%link{:rel=>"stylesheet", :href=>"/assets/profile.css"}
 
-:scss
-	a {
-		color: #000;
-	}
-	a:hover
-	{
-			color: #333;
-	}
 
 :javascript
 	$.fn.removeClassByPrefix = function (prefix) {
@@ -443,16 +436,8 @@
 	}
 	});
 %body
-	%header.menu
-		%ul
-			%li Pengo
-			%li.right 
-				%a{:href=>"/profile"} 프로필
-			%li.right 내역
-			%li.right 
-				%a{:href=>"/dashboard"} 개요
-
-	.decrypt-button
+	.wrapper-decrypt
+		%h1 PENGO
 		%input#input-file{:accept => "text/html", :onchange => "loadMailFromFile(event.target.files[0])", :type => "file"}
 	.tab-content
 		#auth.tab-pane.active

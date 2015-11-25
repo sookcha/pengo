@@ -1,11 +1,13 @@
 %header.menu
-	%ul
-		%li Pengo
-		%li.right 
-			%a{:href=>"/profile"} 프로필
-		%li.right 내역
-		%li.right 
-			%a{:href=>"/dashboard"} 개요
+	.menu-wrapper
+		%ul
+			%li
+				%img{:src=>"/pengo-logo.svg", :width=>"60px"}
+			%li.right.selected 
+				%a{:href=>"/profile"}프로필
+			%li.right
+				%a{:href=>"/dashboard"} 개요
+				
 .dashboard
 	.dashboard-wrapper
 		%h1 계좌

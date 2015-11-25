@@ -4,8 +4,11 @@ class ProfileController < ApplicationController
   def index
     
   end
+  
   def update
+    
   end
+  
   def save
     document = params[:data_value]
     
@@ -22,7 +25,6 @@ class ProfileController < ApplicationController
       budget = Budget.new
       if p.split("\\r\\n")[2].to_s != ""
         # 0 시간 1 계좌 2 타입 3 금액(comma) 4 잔액(comma) 5 사용처
-        
         budget.trans_date = date + "T" + p.split("\\r\\n")[0].to_s        
         budget.trans_account = p.split("\\r\\n")[1].to_s
         
@@ -40,7 +42,8 @@ class ProfileController < ApplicationController
         budget.save
       end
     end
-        
-    render :text => search.to_s
+    
+    render :text => "Done"
+    redirect_to "/dashboard"
   end
 end

@@ -11,12 +11,6 @@
 a span {
 	color: #000;
 }
-.decrypt-button {
-	width: 3.8em;
-	padding: 0.2em;
-	margin: auto;
-	background-color: #FFF;
-}
 
 .decrypt {
 	width: 100%;
@@ -27,6 +21,9 @@ li.right a {
 	color: #000;
 }
 
-a {
-	color: #FFF;
+
+.wrapper-decrypt {
+	max-width: 780px;
+	margin: 0 auto;
+	text-align:center;
 }

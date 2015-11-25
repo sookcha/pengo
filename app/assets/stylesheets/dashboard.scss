@@ -9,25 +9,32 @@
 }
 
 header.menu {
-	background-color: #FFF;
-	margin-bottom: 2em;
+	max-width: 100%;
+	background-color: #F2F2F2;
 	padding: 1em;
+	margin-bottom: 1em;
+}
+
+.menu-wrapper {
+	max-width: 820px;
+	margin: 0 auto;
 }
 
 .menu ul {
 	margin: 0;
 	padding: 0;
+	font-size: 1.6em;
+	
 }
 
 .menu ul li {
 	list-style-type: none;
-	display: inline;
-	font-size: 1.5em;
+	display: inline;	
 }
 
 li.right {
+	float:right;
 	margin: 0 0.5em;
-	float: right;
 }
 
 .dashboard {
@@ -74,4 +81,18 @@ td {
 }
 th {
 	border: 1px solid silver;	
+}
+
+a {
+	color: #FFF;
+	text-decoration: none;
+}
+
+.selected a {
+	border-bottom: 2px solid #E5846E;
+}
+
+.right a:hover {
+	border-bottom: 2px solid #E5846E;
+	
 }
