@@ -1,0 +1,9 @@
+{
+  "extends": "../.jshintrc",
+  "globals": {
+    "$": false,
+    "QUnit": false,
+    "require": false,
+    "srcDoc": false
+  }
+}

@@ -1,0 +1,32 @@
+%header.menu
+	%ul
+		%li Pengo
+		%li.right 
+			%a{:href=>"/profile"}프로필
+		%li.right 내역
+		%li.right
+			%a{:href=>"/dashboard"} 개요
+.dashboard
+	.dashboard-wrapper
+		.notice
+			%h1 지출 내역이 오래됐습니다. 업데이트 하세요!
+			%span.update 업데이트
+			
+		%h1 지출
+		%table
+			%thead
+				%tr
+					%th
+						구분
+					%th
+						날짜
+					%th
+						금액
+					%th
+						사용처
+			%tbody
+				%tr
+					%td 지출
+					%td 15.11.19
+					%td 10,000원
+					%td Apple Store

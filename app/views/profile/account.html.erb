@@ -1,0 +1,486 @@
+<HTML>
+<HEAD>
+<META http-equiv=Content-Type content='text/html; charset=euc-kr'>
+<LINK href="http://img.shinhan.com/css/common.css" rel=stylesheet>
+<script language=javascript src=http://img.shinhan.com/ums/initech/mouse.js></script>
+<style>DIV#embedControl {text-align : center}</style>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'>
+<link href='http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.no-responsive.no-icons.min.css' rel='stylesheet'>
+<link href='http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css' rel='stylesheet'>
+<link href='/xeit/css/xeit.css' rel='stylesheet'>
+<script src='http://code.jquery.com/jquery-2.1.1.min.js'></script>
+<script src='http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js'></script>
+<script src='/xeit/js/deps/srcdoc-polyfill/srcdoc-polyfill.min.js'></script>
+<script src='/xeit/js/xeit.js'></script>
+<script>
+    $.fn.removeClassByPrefix = function (prefix) {
+        return this.removeClass(function (index, css) {
+            return (css.match(RegExp('\\b'+prefix+'\\S+', 'g')) || []).join(' ');
+        });
+    };
+
+    function displayError(e) {
+        console.error(e);
+        e.preventDefault();
+
+        //HACK: Error와 ErrorEvent의 message가 조금 다름.
+        message = e.message.replace(/(Uncaught )?(.*)Error: /, '');
+
+        $('#auth-password-group').addClass('error');
+        setupAuthAlert('error', '<strong>앗!</strong> ' + message);
+
+        unlockAuthDialog();
+    }
+
+    function resetError(e) {
+        e.preventDefault();
+
+        $('#auth-password-group').removeClass('error');
+        setupAuthAlert('error');
+    }
+
+    function setupAuthAlert(tone, message) {
+        var $auth_alert = $('#auth-alert');
+        tone = tone || '';
+        if (message) {
+            $auth_alert.removeClassByPrefix('alert-');
+            if (tone) {
+                $auth_alert.addClass('alert-'+tone);
+            }
+
+            $auth_alert.html(message).append($('<a>', {
+                class: 'close',
+                href: '#',
+                html: '&times;'
+            }).on('click', function (e) {
+                $auth_alert.fadeOut();
+                $('input#auth-password').focus();
+            })).fadeIn();
+        } else {
+            if ($auth_alert.hasClass('alert-'+tone)) {
+                $auth_alert.fadeOut();
+            }
+        }
+    }
+
+    function setupAuthButton(kind, enable) {
+        var $auth_submit = $('#auth-submit').removeClassByPrefix('btn-');
+        if (kind == 'open') {
+            $auth_submit.addClass('btn-primary').html('<i class="icon-eye-open icon-white"></i> 열어보기');
+        } else if (kind == 'wait') {
+            $auth_submit.addClass('btn-info').html('<i class="icon-eye-close icon-white"></i> 기다리기');
+        } else if (kind == 'return') {
+            $auth_submit.addClass('btn-danger').html('<i class="icon-ban-circle icon-white"></i> 돌아가기');
+        }
+
+        disable = (typeof enable !== 'undefined') ? !enable : false;
+        $auth_submit.prop('disabled', disable).toggleClass('disabled', disable);
+    }
+
+    function unlockAuthDialog() {
+        $('#auth-spinner').fadeOut();
+        $('input#auth-password').prop('disabled', false).focus();
+        setupAuthButton('open', true);
+    }
+
+    function lockAuthDialog() {
+        $('#auth-spinner').fadeIn();
+        $('input#auth-password').prop('disabled', true).blur();
+        setupAuthButton('wait', false);
+    }
+
+    function setupSenderBox(name, support, experimental) {
+        name = name || '';
+        $('#auth-sender-name').val(name);
+
+        if (typeof support !== 'undefined') {
+            if (support) {
+                if (experimental) {
+                    var icon_class = 'text-warning';
+                    var content = '<span class="label label-warning">확인필요</span> 제대로 열릴지 모르겠네요.';
+                } else {
+                    var icon_class = 'text-success';
+                    var content = '<span class="label label-success">지원</span> 아마 열 수 있을 거예요.'
+                }
+            } else {
+                var icon_class = 'text-error';
+                var content = '<span class="label label-important">미지원</span> 지금은 열 수가 없어요.';
+            }
+        } else {
+            var icon_class = 'muted';
+            var content = '';
+        }
+        $('#sender-button > i').removeClassByPrefix('text-').addClass(icon_class);
+        $('#sender-button').popover({
+            html: true,
+            placement: 'top',
+            trigger: 'click | hover'
+        }).on('shown', function (e) {
+            //HACK: modal의 shown이 호출되는 것 방지.
+            e.stopPropagation();
+        }).data('popover').options.content = content;
+    }
+
+    function setupPasswordBox(support, rule, notice) {
+        var $auth_password = $('input#auth-password').off('blur input').on('blur input', resetError);
+
+        support = support || false;
+        $auth_password.prop('disabled', !support);
+        if (support) {
+            $auth_password.focus();
+        } else {
+            $auth_password.blur();
+        }
+
+        rule = rule || [];
+        var ruler = function (rule) {
+            function flatten(array) {
+                return [].concat.apply([], array);
+            }
+
+            function extract(rule, key) {
+                return rule.map(function (v) {
+                    return v[key];
+                }).filter(function (v) {
+                    return typeof v !== 'undefined';
+                });
+            }
+
+            var hinter = {
+                init: function (hints) {
+                    this.hints = hints;
+                    return this;
+                },
+
+                shorten: function () {
+                    var a = this.hints;
+                    if (a.length > 1) {
+                        return a.map(function (v) {
+                            return v.replace(/\s+.*/, '');
+                        });
+                    } else {
+                        return a;
+                    }
+                },
+
+                longest: function (array) {
+                    return Math.max.apply(null, array.map(function (v, i) {
+                        return v.length;
+                    }));
+                },
+
+                combine: function (array) {
+                    var r = [];
+                    var length = this.longest(array);
+                    for (var i = 1; i <= length; i++) {
+                        var char = array.map(function (v) {
+                            return v[v.length-i];
+                        }).reduce(function (p, c) {
+                            return (p == c) ? c : '';
+                        });
+                        if (char) {
+                            r.unshift(char);
+                        } else {
+                            if (i == 1 && array.length == 2) {
+                                r.unshift(array.join('/'));
+                            } else {
+                                r.unshift(array.map(function (v) {
+                                    return v.substring(0, v.length-i+1);
+                                }).reduce(function (p, c) {
+                                    return hinter.combine([p, c]);
+                                }));
+                            }
+                            break;
+                        }
+                    }
+                    return r.join('');
+                },
+
+                hint: function () {
+                    return this.combine(this.shorten());
+                }
+            }.init(flatten(extract(rule, 'hint')));
+
+            var sizer = {
+                init: function (sizes) {
+                    this.sizes = sizes;
+                    return this;
+                },
+
+                sanitize: function (size) {
+                    return size.toString().replace(/\\\w+/, '');
+                },
+
+                size: function () {
+                    var a = flatten(this.sizes.map(function (v) {
+                        return sizer.sanitize(v).split(/~/);
+                    })).sort(function (a, b) {
+                        return a - b;
+                    });
+                    if (a.length > 0) {
+                        var min = a[0],
+                            max = a[a.length-1];
+                        if (min == max) {
+                            return '('+min+'자리)';
+                        } else {
+                            return '('+min+'~'+max+'자리)';
+                        }
+                    } else {
+                        return '';
+                    }
+                },
+
+                pattern: function () {
+                    var a = this.sizes;
+                    if (a.length > 0) {
+                        return a.map(function (v) {
+                            return v.toString().replace(/(\d+(?:~\d+)?)(\\\w)?/, '[\\d$2]{$1}').replace(/~/, ',')
+                        }).join('|');
+                    } else {
+                        return '.*';
+                    }
+                }
+            }.init(extract(rule, 'size'));
+
+            return {
+                placeholder: function () {
+                    return hinter.hint() + ' ' + sizer.size();
+                },
+
+                pattern: function () {
+                    return sizer.pattern();
+                },
+
+                label: function () {
+                    function span(hint, size) {
+                        size = sizer.sanitize(size || '');
+                        return '<span class="badge badge-inverse">'+size+'</span> <span class="label">'+hint+'</span>';
+                    }
+                    return rule.map(function (v) {
+                        if (v.hint instanceof Array) {
+                            return v.hint.map(function (w) {
+                                return span(w, v.size);
+                            }).join('<br>');
+                        } else {
+                            return span(v.hint, v.size);
+                        }
+                    }).join('<br>');
+                }
+            };
+        }(rule);
+
+        notice = notice || '';
+        var content = '<p>' + ruler.label() + '</p>';
+        if (notice) {
+            content += '<div class="well well-small">' + notice + '</div>';
+        }
+
+        $auth_password.attr('placeholder', ruler.placeholder()).attr('pattern', ruler.pattern());
+        //HACK: 최근 각종 입력패턴 변경 사례에 대응. (#71)
+        $auth_password.removeAttr('pattern');
+        $('#password-button').popover({
+            html: true,
+            placement: 'bottom',
+            trigger: 'click | hover'
+        }).on('shown', function (e) {
+            e.stopPropagation();
+        }).data('popover').options.content = content;
+    }
+
+    function showAuthDialog() {
+        var $auth_dialog = $('#auth-dialog').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+
+        setupSenderBox();
+        setupPasswordBox(false);
+
+        if (window.chrome && window.chrome.webstore && location.search != '?chrome') {
+            setupAuthAlert('success', '<strong>나왔습니다!</strong> 크롬에서는 <a href="http://j.mp/xeitce" target="_blank">확장 프로그램</a>으로 더욱 쉽고 편하게 사용하세요.');
+        } else {
+            setupAuthAlert('info', '<strong>걱정마세요!</strong> 비밀번호와 메일 내용을 외부로 전송하거나 저장하지 않아요.');
+        }
+
+        lockAuthDialog();
+        return $auth_dialog;
+    }
+
+    function hideAuthDialog(callback) {
+        return $('#auth-dialog').on('hidden', callback).modal('hide');
+    }
+
+    function setupAuthDialog(sender) {
+        unlockAuthDialog();
+
+        // 발송기관 표시.
+        setupSenderBox(sender.name, sender.support, sender.experimental);
+
+        // 비밀번호 설명 표시.
+        setupPasswordBox(sender.support, sender.rule, sender.notice);
+
+        // 지원여부에 따른 인증화면 구성.
+        if (sender.support) {
+            setupAuthButton('open');
+        } else {
+            setupAuthAlert('warning', '<strong>모르겠어요!</strong> 보안메일이 아니거나 아직 지원하지 않는 형식인 것 같아요.');
+            setupAuthButton('return');
+        }
+
+        // 버튼 동작 설정.
+        $('#auth-form').on('submit', function (e) {
+            e.preventDefault();
+
+            if (sender.support) {
+                lockAuthDialog();
+								console.log("What's wrong?")
+								
+
+                var password = $('input#auth-password').val();												
+                xeit.load(
+                    password,
+                    function (r) {
+                        hideAuthDialog(function () {																	
+                            showMail(r.message);
+                        });
+                    },
+                    displayError
+                );
+            } else {
+							
+                hideAuthDialog(function () {
+                    parent.postMessage('fallback', '*');
+                });
+            }
+        });
+    }
+								
+		
+		function loadMailFromFile(file) {
+			$('#xeit-nav a[href="#mail"]').show();
+			
+			var fr = new FileReader();
+			fr.onload = function(e) {
+		    // e.target.result should contain the text
+				var html = e.target.result
+        showAuthDialog().on('shown', function () {
+            window.addEventListener('message', function (e) {
+                xeit.init(
+                    html,
+                    function (r) {
+                        setupAuthDialog(r.sender);
+                    },
+                    displayError
+                );
+            }, false);
+            window.parent.postMessage('ready', '*');
+        });
+			};
+			fr.readAsText(file);
+		}
+
+    function loadMail() {
+        showAuthDialog().on('shown', function () {
+            window.addEventListener('message', function (e) {
+                var html = e.data;
+                xeit.init(
+                    html,
+                    function (r) {
+                        setupAuthDialog(r.sender);
+                    },
+                    displayError
+                );
+            }, false);
+            window.parent.postMessage('ready', '*');
+        });
+    }
+
+    function showMail(message) {
+        var $content = $('#mail-content');
+        var content = $content[0];
+				
+				// 보안 메일 불러오기
+				console.log(message);
+				
+				$.ajax({
+				        url : "/profile/save",
+				        type : "post",
+				        data : { data_value: JSON.stringify(message), authenticity_token: window._token }
+				    });
+				
+        //HACK: Firefox는 아직 iframe srcdoc 미지원.
+        //$mailContent.attr('srcdoc', message);
+        //srcDoc.set(content, message);
+				
+        //$('#xeit-nav a[href="#mail"]').tab('show');
+    }
+
+    function loadHelp() {
+        $('#xeit-nav a[href="#mail"]').remove();
+        //$('#xeit-nav a[href="#help"]').tab('show');
+    }
+
+    function isMailAttached() {
+        return (window.self !== window.top);
+    }
+
+    function isMailLoaded() {
+        return ($('#mail.active').length > 0);
+    }
+
+    $(document).ready(function () {
+        if (isMailAttached()) {
+            //HACK: Safari webarchive 처럼 메일이 이미 열려있으면 무시. (#55)
+            if (!isMailLoaded()) {
+                loadMail();
+            }
+        } else {
+            loadHelp();
+        }
+    });
+</script>
+</HEAD>
+<BODY>
+<header class="decrypt">
+</header>
+	
+<div class="decrypt-button">
+	<input type="file" id="input-file" accept="text/html" onchange="loadMailFromFile(event.target.files[0])">
+</div>
+
+<div class='tab-content'>
+<div id='auth' class='tab-pane active'>
+    <div id='auth-dialog' class='modal hide fade'>
+        <form id='auth-form' class='form-horizontal modal-form'>
+            <div class='modal-header'>
+                <i id='auth-spinner' class='icon-asterisk icon-spin icon-2x pull-right'></i><h3>보안메일</h3>
+            </div>
+            <div class='modal-body'>
+                <div class='control-group'>
+                    <div class='controls'>
+                        <div class='input-prepend'>
+                            <a href='#' id='sender-button' class='btn'><i class='icon-envelope'></i></a>
+                            <input type='text' id='auth-sender-name' readonly>
+                        </div>
+                    </div>
+                </div>
+                <div id='auth-password-group' class='control-group'>
+                    <div class='controls'>
+                        <div class='input-prepend'>
+                            <a href='#' id='password-button' class='btn disabled'><i class='icon-key'></i></a>
+                            <input type='password' id='auth-password' placeholder='비밀번호' required>
+                        </div>
+                    </div>
+                </div>
+                <div id='auth-alert' class='alert'></div>
+            </div>
+            <div class='modal-footer'>
+                <button type='submit' id='auth-submit' class='btn'></button>
+            </div>
+        </form>
+    </div>
+</div>
+<div id='mail' class='tab-pane'>
+    <iframe id='mail-content'></iframe>
+</div>
+</BODY></HTML>

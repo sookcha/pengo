@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  trans_date: 2015-11-24 21:05:57
+  account: MyString
+  type: 
+  amount: 1
+  balance: 1
+  store: MyString
+  user_id: 1
+
+two:
+  trans_date: 2015-11-24 21:05:57
+  account: MyString
+  type: 
+  amount: 1
+  balance: 1
+  store: MyString
+  user_id: 1

@@ -1,0 +1,95 @@
+/* Frame */
+
+body {
+  padding-top: 40px;
+}
+
+#mail-content {
+  position: fixed;
+  top: 40px;
+  width: 100%;
+  height:         calc(100% - 40px);
+  height: -webkit-calc(100% - 40px);
+  border: 0;
+}
+
+/* NavBar */
+
+.navbar .brand {
+  margin-left: 0;
+  font-weight: bold;
+  color: #000;
+  text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.125);
+  -webkit-transition: all .2s linear;
+     -moz-transition: all .2s linear;
+          transition: all .2s linear;
+}
+.navbar .brand:hover {
+  color: #999;
+  text-decoration: none;
+  text-shadow: 0 1px 0 rgba(255,255,255,.1), 0 0 30px rgba(255,255,255,.4);
+}
+
+/* Auth dialog */
+
+#auth-spinner {
+  display: none;
+  color: #ff9900;
+}
+
+/* HACK: popover 잘림 방지. (https://github.com/twitter/bootstrap/issues/6344) */
+#auth-dialog .modal-header,
+#auth-dialog .modal-footer {
+  position: relative;
+  z-index: 1;
+}
+#auth-dialog .modal-body {
+  overflow: visible;
+}
+
+#auth-alert.alert {
+  margin-bottom: 0;
+}
+
+/* Footer */
+
+#push, #footer {
+  height: 60px;
+}
+
+#footer {
+  border-top: 1px solid #e5e5e5;
+  background-color: #f5f5f5;
+}
+
+#footer .credit {
+  margin: 20px 0;
+}
+
+/* Table */
+@media (max-width: 767px) {
+  #footer {
+    margin-left: -20px;
+    margin-right: -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* Landscape phones */
+@media (max-width: 480px) {
+  #footer {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+}
+
+/* Typography */
+body,
+input,
+button,
+select,
+textarea,
+.navbar-search .search-query {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Apple SD Gothic Neo", "Nanum Gothic", "Malgun Gothic", sans-serif;
+}

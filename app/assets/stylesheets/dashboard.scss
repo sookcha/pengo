@@ -1,0 +1,77 @@
+.dashboard {
+	background-color: #FFF;
+	color: #000;
+	margin: 0;
+}
+
+.dashboard h1 {
+	margin: 0;
+}
+
+header.menu {
+	background-color: #FFF;
+	margin-bottom: 2em;
+	padding: 1em;
+}
+
+.menu ul {
+	margin: 0;
+	padding: 0;
+}
+
+.menu ul li {
+	list-style-type: none;
+	display: inline;
+	font-size: 1.5em;
+}
+
+li.right {
+	margin: 0 0.5em;
+	float: right;
+}
+
+.dashboard {
+	width: 100%;	
+}
+
+.dashboard-wrapper {
+	max-width: 820px;
+	padding: 0 1em;
+	margin: auto;
+}
+
+.notice {
+	padding: 0.5em;
+	background-color: #86B298;
+	color: #FFF;
+	border: 2.5px solid #63997A;	
+	border-radius: 3px;
+	margin: 0 0 1.5em 0;
+}
+
+.notice h1 {
+	width: 100%;
+	font-size: 1em;
+	display: inline;
+}
+
+span.update {
+	display: inline;
+	float: right;
+}
+
+table {
+	width:100%;
+	margin: 1.5em 0;
+	text-align: center;
+}
+
+tr {
+	border: 1px solid silver;
+}
+td {
+	border: 1px solid silver;
+}
+th {
+	border: 1px solid silver;	
+}
