@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  get 'profile/account'
+  get 'profile/update'
 
   devise_for :users
   

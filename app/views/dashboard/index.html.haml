@@ -10,7 +10,10 @@
 	.dashboard-wrapper
 		.notice
 			%h1 지출 내역이 오래됐습니다. 업데이트 하세요!
-			%span.update 업데이트
+			%span.update 
+				%a{:href=>"/profile/update"} 업데이트
+				
+			
 			
 		%h1 지출
 		%table
@@ -21,12 +24,16 @@
 					%th
 						날짜
 					%th
+						사용처
+					%th
 						금액
 					%th
-						사용처
+						잔액
 			%tbody
-				%tr
-					%td 지출
-					%td 15.11.19
-					%td 10,000원
-					%td Apple Store
+				- @budget.each do |b|
+					%tr
+						%td= b.trans_type
+						%td= b.trans_date
+						%td= b.trans_store
+						%td= b.trans_amount
+						%td= b.trans_balance

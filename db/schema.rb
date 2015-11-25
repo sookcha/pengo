@@ -15,14 +15,14 @@ ActiveRecord::Schema.define(version: 20151124120557) do
 
   create_table "budgets", force: :cascade do |t|
     t.datetime "trans_date"
-    t.string   "account"
-    t.string   "type"
-    t.integer  "amount"
-    t.integer  "balance"
-    t.string   "store"
+    t.string   "trans_account"
+    t.string   "trans_type"
+    t.integer  "trans_amount"
+    t.integer  "trans_balance"
+    t.string   "trans_store"
     t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "users", force: :cascade do |t|
