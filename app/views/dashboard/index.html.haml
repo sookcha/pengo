@@ -40,8 +40,8 @@
 						%td= b.trans_balance
 						
 :javascript
-	var width = 650,
-	    height = 300,
+	var width = 850,
+	    height = 400,
 	    radius = Math.min(width, height) / 2;
 
 	var color = d3.scale.ordinal()
@@ -53,7 +53,7 @@
 
 	var pie = d3.layout.pie()
 	    .sort(null)
-	    .value(function(d) { return d.trans_amount; });
+	    .value(function(d) { return d.percentage; });
 
 	var svg = d3.select("#pie-chart").append("svg")
 	    .attr("width", width)
@@ -69,12 +69,12 @@
 		
 	  g.append("path")
 	      .attr("d", arc)
-	      .style("fill", function(d) { return color(d.data.trans_store); });
+	      .style("fill", function(d) { return color(d.data.type); });
 		
 	  g.append("text")
 	      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
 	      .attr("dy", ".35em")
 	      .style("text-anchor", "middle")
-	      .text(function(d) { return d.data.trans_store; });
+	      .text(function(d) { return d.data.type; });
 		
 	});

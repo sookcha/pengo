@@ -47,10 +47,31 @@ class ProfileController < ApplicationController
     redirect_to "/dashboard"
   end
   def data
-    @budget = Budget.where(:user_id => 1)
+    budget = Budget.where(:user_id => 1)
+    
+    totalPay = 0
+    groceries = 0
+    internetServices = 0
+    
+    budget.each do |b|
+      totalPay += b.trans_amount
+      if b.trans_store.include? "마트" or b.trans_store.include? "GS" or b.trans_store.include? "CU"
+        groceries += b.trans_amount
+      end
+      if b.trans_store.include? "ITUNES.CO"
+        internetServices += b.trans_amount
+      end
+    end
+    
+    martPercentage = (groceries.fdiv(totalPay).round(2)*100).to_i
+    internetServicesPercentage = (internetServices.fdiv(totalPay).round(2)*100).to_i
+    etcPercentage = 100 - (martPercentage + internetServicesPercentage)
+    
     respond_to do |format|
       format.csv {
-        render :csv => @budget, :only => [:trans_store,:trans_amount]
+        render :text => "type,percentage\r\n편의점+마트," + martPercentage.to_s+ "\r\n인터넷서비스," + internetServicesPercentage.to_s + "\r\n기타," + etcPercentage.to_s
+                        
+        #render :csv => @budget, :only => [:trans_store,:trans_amount]
       }
     end
   end
