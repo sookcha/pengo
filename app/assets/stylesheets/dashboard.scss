@@ -89,10 +89,41 @@ a {
 }
 
 .selected a {
-	border-bottom: 2px solid #E5846E;
+	border-bottom: 2px solid #D92A24;
 }
 
 .right a:hover {
 	border-bottom: 2px solid #E5846E;
 	
+}
+
+.last-update {
+	width: 100%;
+	display: block;
+	text-align: center;
+	padding: 5px;
+	color: #000;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.x.axis path {
+  display: none;
 }

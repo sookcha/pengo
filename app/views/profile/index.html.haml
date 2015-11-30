@@ -2,7 +2,7 @@
 	.menu-wrapper
 		%ul
 			%li
-				%img{:src=>"/pengo-logo.svg", :width=>"60px"}
+				%img{:src=>"/pengo-logo.svg", :width=>"130px"}
 			%li.right.selected 
 				%a{:href=>"/profile"}프로필
 			%li.right
@@ -17,3 +17,26 @@
 			%li 기업은행
 			%li 
 				%a{:href=>"/profile/update"} 계좌추가
+		%h1 내역
+		%table
+			%thead
+				%tr
+					%th
+						구분
+					%th
+						날짜
+					%th
+						사용처
+					%th
+						금액
+					%th
+						잔액
+			%tbody
+				- @budget.each do |b|
+					%tr
+						%td= b.trans_type
+						%td= b.trans_date
+						%td= b.trans_store
+						%td= b.trans_amount
+						%td= b.trans_balance
+		

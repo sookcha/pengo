@@ -2,6 +2,8 @@ class ProfileController < ApplicationController
   skip_before_filter :verify_authenticity_token, only: [:save]
   
   def index
+    @budget = Budget.where(:user_id => 1)
+    
   end
   
   def update
@@ -50,29 +52,47 @@ class ProfileController < ApplicationController
     budget = Budget.where(:user_id => 1)
     
     totalPay = 0
-    groceries = 0
+    mart = 0
+    food = 0
     internetServices = 0
     
     budget.each do |b|
       totalPay += b.trans_amount
-      if b.trans_store.include? "마트" or b.trans_store.include? "GS" or b.trans_store.include? "CU"
-        groceries += b.trans_amount
-      end
-      if b.trans_store.include? "ITUNES.CO"
-        internetServices += b.trans_amount
+      if b.trans_type == "출금"
+        if b.trans_store.include? "마트" or b.trans_store.include? "GS" or b.trans_store.include? "CU" or b.trans_store.include? "세븐일레븐"
+          mart += b.trans_amount
+        end
+        if b.trans_store.include? "파리바게뜨" or b.trans_store.include? "푸드"
+          food += b.trans_amount
+        end
+        if b.trans_store.include? "ITUNES.CO"
+          internetServices += b.trans_amount
+        end
       end
     end
     
-    martPercentage = (groceries.fdiv(totalPay).round(2)*100).to_i
+    martPercentage = (mart.fdiv(totalPay).round(2)*100).to_i
+    foodPercentage = (food.fdiv(totalPay).round(2)*100).to_i
     internetServicesPercentage = (internetServices.fdiv(totalPay).round(2)*100).to_i
-    etcPercentage = 100 - (martPercentage + internetServicesPercentage)
+    
+    etcPercentage = 100 - (martPercentage + internetServicesPercentage + foodPercentage)
     
     respond_to do |format|
       format.csv {
-        render :text => "type,percentage\r\n편의점+마트," + martPercentage.to_s+ "\r\n인터넷서비스," + internetServicesPercentage.to_s + "\r\n기타," + etcPercentage.to_s
-                        
-        #render :csv => @budget, :only => [:trans_store,:trans_amount]
-      }
+        render :text => "type,percentage\r\n편의점+마트," + martPercentage.to_s + "\r\n음식," + foodPercentage.to_s  + "\r\n인터넷서비스," + internetServicesPercentage.to_s + "\r\n기타," + etcPercentage.to_s}
+      
     end
+  end
+    
+  def dailydata
+    budget = Budget.where(:user_id => 1).group("strftime('%Y-%m-%d',trans_date)").sum(:trans_amount)
+    dailyCSV = "date\tamount\r\n"
+    
+    budget.to_a.each do |b|
+      dailyCSV += b[0] + "\t" + b[1].to_s + "\r\n"
+    end
+    
+    
+    render :text => dailyCSV
   end
 end
