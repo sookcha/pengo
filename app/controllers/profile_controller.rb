@@ -55,6 +55,7 @@ class ProfileController < ApplicationController
     mart = 0
     food = 0
     internetServices = 0
+    transport = 0
     
     budget.each do |b|
       totalPay += b.trans_amount
@@ -65,8 +66,11 @@ class ProfileController < ApplicationController
         if b.trans_store.include? "파리바게뜨" or b.trans_store.include? "푸드"
           food += b.trans_amount
         end
-        if b.trans_store.include? "ITUNES.CO"
+        if b.trans_store.include? "ITUNES.CO" or b.trans_store.include? "PG" or b.trans_store.include? "세븐일레븐"
           internetServices += b.trans_amount
+        end
+        if b.trans_store.include? "승차권"
+          transport += b.trans_amount
         end
       end
     end
@@ -74,24 +78,24 @@ class ProfileController < ApplicationController
     martPercentage = (mart.fdiv(totalPay).round(2)*100).to_i
     foodPercentage = (food.fdiv(totalPay).round(2)*100).to_i
     internetServicesPercentage = (internetServices.fdiv(totalPay).round(2)*100).to_i
+    transportPercentage = (transport.fdiv(totalPay).round(2)*100).to_i
     
     etcPercentage = 100 - (martPercentage + internetServicesPercentage + foodPercentage)
     
     respond_to do |format|
       format.csv {
-        render :text => "type,percentage\r\n편의점+마트," + martPercentage.to_s + "\r\n음식," + foodPercentage.to_s  + "\r\n인터넷서비스," + internetServicesPercentage.to_s + "\r\n기타," + etcPercentage.to_s}
+        render :text => "type,percentage\r\n편의점+마트," + martPercentage.to_s + "\r\n음식," + foodPercentage.to_s  + "\r\n인터넷서비스," + internetServicesPercentage.to_s + "\r\n교통," + transportPercentage.to_s + "\r\n기타," + etcPercentage.to_s}
       
     end
   end
     
   def dailydata
-    budget = Budget.where(:user_id => 1).group("strftime('%Y-%m-%d',trans_date)").sum(:trans_amount)
+    budget = Budget.where(:user_id => 1, :trans_type=> "출금").group("strftime('%Y-%m-%d',trans_date)").sum(:trans_amount)
     dailyCSV = "date\tamount\r\n"
     
     budget.to_a.each do |b|
       dailyCSV += b[0] + "\t" + b[1].to_s + "\r\n"
     end
-    
     
     render :text => dailyCSV
   end

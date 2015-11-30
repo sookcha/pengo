@@ -8,7 +8,7 @@
 				%a{:href=>"/dashboard"} 개요
 .dashboard
 	.dashboard-wrapper
-		- if Time.now.to_date != @budget.last.trans_date.to_date
+		- if Time.now.to_date - 1 != @budget.last.trans_date.to_date
 			.notice			
 				%h1 지출 내역이 오래됐나요? 지금 업데이트 하세요
 				%span.update 
