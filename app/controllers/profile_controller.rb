@@ -3,7 +3,6 @@ class ProfileController < ApplicationController
   
   def index
     @budget = Budget.where(:user_id => 1)
-    
   end
   
   def update
@@ -22,7 +21,7 @@ class ProfileController < ApplicationController
         
     payment = search[6].text.to_s.split("비고")[1].to_s
     nPayment = payment.split("\\r\\n\\r\\n").drop(1)
-        
+    
     nPayment.each do |p|
       budget = Budget.new
       if p.split("\\r\\n")[2].to_s != ""

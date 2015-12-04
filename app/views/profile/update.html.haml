@@ -438,6 +438,7 @@
 %body
 	.wrapper-decrypt
 		%h1 PENGO
+		%p Pengo는 아직 신한은행만 지원합니다. 신한은행 입출금알림 보안메일 html 파일을 선택해주세요.
 		%input#input-file{:accept => "text/html", :onchange => "loadMailFromFile(event.target.files[0])", :type => "file"}
 	.tab-content
 		#auth.tab-pane.active

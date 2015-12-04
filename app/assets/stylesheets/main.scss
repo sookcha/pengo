@@ -4,10 +4,30 @@ body {
 	
 }
 
+.wrapper-full.header {
+	background-image: url("https://images.unsplash.com/photo-1430598825529-927d770c194f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&s=04f2d45d04ca46424891d0cdd2766108");
+	background-position: center;
+	background-size: cover;
+	padding-bottom: 10em;
+	
+}
+
+.wrapper-full.header {
+	padding: 10em 0;
+}
+
+.wrapper-full.header h1 {
+	padding: 0;
+	font-size: 7em;
+	background-color: #000;
+	color: #FFF;
+}
+
 .wrapper-full {
   width: 100%;
-  background-color: #333;
-  color: #FFF;
+  background-color: #FFF;
+  color: #000;
+	
 }
 
 .wrapper-full h1 {
@@ -17,10 +37,18 @@ body {
 	font-family: "Lato", sans-serif;
 }
 
+header .wrapper span {
+	color: #FFF;
+	padding: 2em 0;
+	font-size: 3em;
+	display: inline-block;
+}
+
 header .wrapper {
-	max-width: 720px;
+	max-width: 500px;
 	margin:auto;
 	text-align: center;
+	color: #000;
 }
 
 article .wrapper {
