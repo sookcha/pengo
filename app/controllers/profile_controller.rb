@@ -48,7 +48,7 @@ class ProfileController < ApplicationController
     redirect_to "/dashboard"
   end
   def data
-    budget = Budget.where(:user_id => 1)
+    budget = Budget.recents.where(:user_id => 1)
     
     totalPay = 0
     mart = 0
@@ -89,7 +89,7 @@ class ProfileController < ApplicationController
   end
     
   def dailydata
-    budget = Budget.where(:user_id => 1, :trans_type=> "출금").group("strftime('%Y-%m-%d',trans_date)").sum(:trans_amount)
+    budget = Budget.recents.where(:user_id => 1, :trans_type=> "출금").group("strftime('%Y-%m-%d',trans_date)").sum(:trans_amount)
     dailyCSV = "date\tamount\r\n"
     
     budget.to_a.each do |b|

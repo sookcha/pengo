@@ -11,7 +11,7 @@
 		- if Time.now.to_date - 1 != @budget.last.trans_date.to_date
 			.notice			
 				%h1 지출 내역이 오래됐나요? 지금 업데이트 하세요
-				%span.update 
+				%span.update
 					%a{:href=>"/profile/update"} 업데이트		
 		%span.last-update= "최종 업데이트: " + @budget.last.trans_date.to_date.to_s
 		%h1 종합 리포트
