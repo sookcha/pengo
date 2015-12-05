@@ -51,6 +51,7 @@ class ProfileController < ApplicationController
     budget = Budget.recents.where(:user_id => 1)
     
     totalPay = 0
+    
     mart = 0
     food = 0
     internetServices = 0
@@ -61,15 +62,16 @@ class ProfileController < ApplicationController
       if b.trans_type == "출금"
         if b.trans_store.include? "마트" or b.trans_store.include? "GS" or b.trans_store.include? "CU" or b.trans_store.include? "세븐일레븐"
           mart += b.trans_amount
-        end
-        if b.trans_store.include? "파리바게뜨" or b.trans_store.include? "푸드"
+      
+        elsif b.trans_store.include? "파리바게뜨" or b.trans_store.include? "푸드"
           food += b.trans_amount
-        end
-        if b.trans_store.include? "ITUNES.CO" or b.trans_store.include? "PG" or b.trans_store.include? "세븐일레븐"
+        
+        elsif b.trans_store.include? "ITUNES.CO" or b.trans_store.include? "PG" or b.trans_store.include? "세븐일레븐"
           internetServices += b.trans_amount
-        end
-        if b.trans_store.include? "승차권"
+        
+        elsif b.trans_store.include? "승차권"
           transport += b.trans_amount
+          
         end
       end
     end

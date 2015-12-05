@@ -14,9 +14,9 @@
 				%span.update
 					%a{:href=>"/profile/update"} 업데이트		
 		%span.last-update= "최종 업데이트: " + @budget.last.trans_date.to_date.to_s
-		%h1 종합 리포트
+		%h1 종합 리포트 - 최근 14일
 		#pie-chart
-		%h2 일일 사용금액
+		%h2 사용금액
 		#bar-chart
 		
 :javascript
