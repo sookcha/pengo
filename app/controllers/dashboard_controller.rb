@@ -1,6 +1,10 @@
 class DashboardController < ApplicationController
   def index
     @budget = Budget.where(:user_id => 1)
-    @gmail = Gmail.connect("pengonow", ENV["MAIL_SECRET"])
+    
+    MailCheckerJob.perform_later 1
+    
+    # For production -
+    #MailCheckerJob.set(wait: 1.week).perform_later 1
   end
 end
