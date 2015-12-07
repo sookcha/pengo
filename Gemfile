@@ -19,6 +19,7 @@ gem 'nokogiri'
 gem 'render_csv'
 gem 'sidekiq'
 gem 'gmail'
+gem 'sinatra', :require => nil
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'

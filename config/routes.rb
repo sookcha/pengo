@@ -1,4 +1,8 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
+  mount Sidekiq::Web => '/sidekiq'
+  
   get 'profile/update'
   get '/profile/data', :defaults => {:format => 'csv'}
   get 'profile/dailydata' => "profile#dailydata"
