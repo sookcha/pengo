@@ -9,6 +9,8 @@
 
 # Ignore secret file
 /config/secrets.yml
+/.env
+/.powenv
 
 # Ignore the default SQLite database.
 /db/*.sqlite3

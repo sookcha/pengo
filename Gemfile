@@ -18,6 +18,7 @@ gem 'remotipart'
 gem 'nokogiri'
 gem 'render_csv'
 gem 'sidekiq'
+gem 'gmail'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
