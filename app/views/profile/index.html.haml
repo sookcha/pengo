@@ -10,10 +10,25 @@
 				
 .dashboard
 	.dashboard-wrapper
-	
 		%h1 내역
 		%span
 			%a{:href=>"/profile/update"} 업데이트
+		%table
+			%thead
+				%tr
+					%th
+						날짜
+					%th
+						은행
+					%th
+						
+			%tbody	
+			- @migrate.each do |m|
+				%tr
+					%td= m.created_at
+					%td= m.bank
+					%td= "불러오기"
+			
 		
 		%table
 			%thead

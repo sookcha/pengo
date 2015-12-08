@@ -3,6 +3,7 @@ class ProfileController < ApplicationController
   
   def index
     @budget = Budget.where(:user_id => 1)
+    @migrate = Migrate.where(:user_id => 1)
   end
   
   def update

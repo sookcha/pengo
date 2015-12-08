@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151208092053) do
+ActiveRecord::Schema.define(version: 20151208115459) do
 
   create_table "budgets", force: :cascade do |t|
     t.datetime "trans_date"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(version: 20151208092053) do
     t.string   "receipt_content_type"
     t.integer  "receipt_file_size"
     t.datetime "receipt_updated_at"
+    t.integer  "user_id"
   end
 
   create_table "users", force: :cascade do |t|

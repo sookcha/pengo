@@ -13,6 +13,7 @@ class MailCheckerJob < ActiveJob::Base
     m = Migrate.new
     m.bank = "Shinhan"
     m.receipt = f
+    m.user_id = 1
     m.save
                 
     # For recurring :
