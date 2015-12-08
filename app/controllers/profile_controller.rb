@@ -38,8 +38,9 @@ class ProfileController < ApplicationController
         budget.trans_amount = p.split("\\r\\n")[3].to_s.gsub(",","").to_i
         budget.trans_balance = p.split("\\r\\n")[4].to_s.gsub(",","").to_i
         budget.trans_store = p.split("\\r\\n")[5].to_s
+        budget.bank = "Shinhan"
         budget.user_id = 1
-            
+        
         budget.save
       end
     end
@@ -86,7 +87,6 @@ class ProfileController < ApplicationController
     respond_to do |format|
       format.csv {
         render :text => "type,percentage\r\n편의점+마트," + martPercentage.to_s + "\r\n음식," + foodPercentage.to_s  + "\r\n인터넷서비스," + internetServicesPercentage.to_s + "\r\n교통," + transportPercentage.to_s + "\r\n기타," + etcPercentage.to_s}
-      
     end
   end
     

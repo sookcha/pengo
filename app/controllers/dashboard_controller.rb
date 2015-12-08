@@ -3,8 +3,7 @@ class DashboardController < ApplicationController
     @budget = Budget.where(:user_id => 1)
     
     MailCheckerJob.perform_later 1
-    
     # For production -
-    #MailCheckerJob.set(wait: 1.week).perform_later 1
+    #MailCheckerJob.set(wait: 24.hour).perform_later 1
   end
 end

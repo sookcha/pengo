@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151124120557) do
+ActiveRecord::Schema.define(version: 20151208092053) do
 
   create_table "budgets", force: :cascade do |t|
     t.datetime "trans_date"
@@ -23,6 +23,17 @@ ActiveRecord::Schema.define(version: 20151124120557) do
     t.integer  "user_id"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.string   "bank"
+  end
+
+  create_table "migrates", force: :cascade do |t|
+    t.string   "bank"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.string   "receipt_file_name"
+    t.string   "receipt_content_type"
+    t.integer  "receipt_file_size"
+    t.datetime "receipt_updated_at"
   end
 
   create_table "users", force: :cascade do |t|

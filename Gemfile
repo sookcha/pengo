@@ -20,6 +20,7 @@ gem 'render_csv'
 gem 'sidekiq'
 gem 'gmail'
 gem 'sinatra', :require => nil
+gem 'paperclip'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
