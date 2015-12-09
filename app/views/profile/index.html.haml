@@ -1,3 +1,448 @@
+%META{:content => "text/html; charset=euc-kr", "http-equiv" => "Content-Type"}
+%link{:href => "/bs.min.css", :rel => "stylesheet"}
+%link{:href => "http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css", :rel => "stylesheet"}
+%link{:href => "/xeit/css/xeit.css", :rel => "stylesheet"}
+%script{:src => "http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"}
+%script{:src => "/xeit/js/deps/srcdoc-polyfill/srcdoc-polyfill.min.js"}
+%script{:src => "/xeit/js/xeit.js"}
+%link{:rel=>"stylesheet", :href=>"/assets/dashboard.css"}
+%link{:rel=>"stylesheet", :href=>"/assets/profile.css"}
+
+
+:javascript
+	$.fn.removeClassByPrefix = function (prefix) {
+	return this.removeClass(function (index, css) {
+	return (css.match(RegExp('\\b'+prefix+'\\S+', 'g')) || []).join(' ');
+	});
+	};
+
+	function displayError(e) {
+	console.error(e);
+	e.preventDefault();
+
+	//HACK: Error와 ErrorEvent의 message가 조금 다름.
+	message = e.message.replace(/(Uncaught )?(.*)Error: /, '');
+
+	$('#auth-password-group').addClass('error');
+	setupAuthAlert('error', '앗! ' + message);
+
+	unlockAuthDialog();
+	}
+
+	function resetError(e) {
+	e.preventDefault();
+
+	$('#auth-password-group').removeClass('error');
+	setupAuthAlert('error');
+	}
+
+	function setupAuthAlert(tone, message) {
+	var $auth_alert = $('#auth-alert');
+	tone = tone || '';
+	if (message) {
+	$auth_alert.removeClassByPrefix('alert-');
+	if (tone) {
+	$auth_alert.addClass('alert-'+tone);
+	}
+
+	$auth_alert.html(message).append($('', {
+	class: 'close',
+	href: '#',
+	html: '&times;'
+	}).on('click', function (e) {
+	$auth_alert.fadeOut();
+	$('input#auth-password').focus();
+	})).fadeIn();
+	} else {
+	if ($auth_alert.hasClass('alert-'+tone)) {
+	$auth_alert.fadeOut();
+	}
+	}
+	}
+
+	function setupAuthButton(kind, enable) {
+	var $auth_submit = $('#auth-submit').removeClassByPrefix('btn-');
+	if (kind == 'open') {
+	$auth_submit.addClass('btn-primary').html(' 열어보기');
+	} else if (kind == 'wait') {
+	$auth_submit.addClass('btn-info').html(' 기다리기');
+	} else if (kind == 'return') {
+	$auth_submit.addClass('btn-danger').html(' 돌아가기');
+	}
+
+	disable = (typeof enable !== 'undefined') ? !enable : false;
+	$auth_submit.prop('disabled', disable).toggleClass('disabled', disable);
+	}
+
+	function unlockAuthDialog() {
+	$('#auth-spinner').fadeOut();
+	$('input#auth-password').prop('disabled', false).focus();
+	setupAuthButton('open', true);
+	}
+
+	function lockAuthDialog() {
+	$('#auth-spinner').fadeIn();
+	$('input#auth-password').prop('disabled', true).blur();
+	setupAuthButton('wait', false);
+	}
+
+	function setupSenderBox(name, support, experimental) {
+	name = name || '';
+	$('#auth-sender-name').val(name);
+
+	if (typeof support !== 'undefined') {
+	if (support) {
+	if (experimental) {
+	var icon_class = 'text-warning';
+	var content = '확인필요 제대로 열릴지 모르겠네요.';
+	} else {
+	var icon_class = 'text-success';
+	var content = '지원 아마 열 수 있을 거예요.'
+	}
+	} else {
+	var icon_class = 'text-error';
+	var content = '미지원 지금은 열 수가 없어요.';
+	}
+	} else {
+	var icon_class = 'muted';
+	var content = '';
+	}
+	$('#sender-button > i').removeClassByPrefix('text-').addClass(icon_class);
+	$('#sender-button').popover({
+	html: true,
+	placement: 'top',
+	trigger: 'click | hover'
+	}).on('shown', function (e) {
+	//HACK: modal의 shown이 호출되는 것 방지.
+	e.stopPropagation();
+	}).data('popover').options.content = content;
+	}
+
+	function setupPasswordBox(support, rule, notice) {
+	var $auth_password = $('input#auth-password').off('blur input').on('blur input', resetError);
+
+	support = support || false;
+	$auth_password.prop('disabled', !support);
+	if (support) {
+	$auth_password.focus();
+	} else {
+	$auth_password.blur();
+	}
+
+	rule = rule || [];
+	var ruler = function (rule) {
+	function flatten(array) {
+	return [].concat.apply([], array);
+	}
+
+	function extract(rule, key) {
+	return rule.map(function (v) {
+	return v[key];
+	}).filter(function (v) {
+	return typeof v !== 'undefined';
+	});
+	}
+
+	var hinter = {
+	init: function (hints) {
+	this.hints = hints;
+	return this;
+	},
+
+	shorten: function () {
+	var a = this.hints;
+	if (a.length > 1) {
+	return a.map(function (v) {
+	return v.replace(/\s+.*/, '');
+	});
+	} else {
+	return a;
+	}
+	},
+
+	longest: function (array) {
+	return Math.max.apply(null, array.map(function (v, i) {
+	return v.length;
+	}));
+	},
+
+	combine: function (array) {
+	var r = [];
+	var length = this.longest(array);
+	for (var i = 1; i <= length; i++) {
+	var char = array.map(function (v) {
+	return v[v.length-i];
+	}).reduce(function (p, c) {
+	return (p == c) ? c : '';
+	});
+	if (char) {
+	r.unshift(char);
+	} else {
+	if (i == 1 && array.length == 2) {
+	r.unshift(array.join('/'));
+	} else {
+	r.unshift(array.map(function (v) {
+	return v.substring(0, v.length-i+1);
+	}).reduce(function (p, c) {
+	return hinter.combine([p, c]);
+	}));
+	}
+	break;
+	}
+	}
+	return r.join('');
+	},
+
+	hint: function () {
+	return this.combine(this.shorten());
+	}
+	}.init(flatten(extract(rule, 'hint')));
+
+	var sizer = {
+	init: function (sizes) {
+	this.sizes = sizes;
+	return this;
+	},
+
+	sanitize: function (size) {
+	return size.toString().replace(/\\\w+/, '');
+	},
+
+	size: function () {
+	var a = flatten(this.sizes.map(function (v) {
+	return sizer.sanitize(v).split(/~/);
+	})).sort(function (a, b) {
+	return a - b;
+	});
+	if (a.length > 0) {
+	var min = a[0],
+	max = a[a.length-1];
+	if (min == max) {
+	return '('+min+'자리)';
+	} else {
+	return '('+min+'~'+max+'자리)';
+	}
+	} else {
+	return '';
+	}
+	},
+
+	pattern: function () {
+	var a = this.sizes;
+	if (a.length > 0) {
+	return a.map(function (v) {
+	return v.toString().replace(/(\d+(?:~\d+)?)(\\\w)?/, '[\\d$2]{$1}').replace(/~/, ',')
+	}).join('|');
+	} else {
+	return '.*';
+	}
+	}
+	}.init(extract(rule, 'size'));
+
+	return {
+	placeholder: function () {
+	return hinter.hint() + ' ' + sizer.size();
+	},
+
+	pattern: function () {
+	return sizer.pattern();
+	},
+
+	label: function () {
+	function span(hint, size) {
+	size = sizer.sanitize(size || '');
+	return ''+size+' '+hint+'';
+	}
+	return rule.map(function (v) {
+	if (v.hint instanceof Array) {
+	return v.hint.map(function (w) {
+	return span(w, v.size);
+	}).join('');
+	} else {
+	return span(v.hint, v.size);
+	}
+	}).join('');
+	}
+	};
+	}(rule);
+
+	notice = notice || '';
+	var content = '' + ruler.label() + '';
+	if (notice) {
+	content += '' + notice + '';
+	}
+
+	$auth_password.attr('placeholder', ruler.placeholder()).attr('pattern', ruler.pattern());
+	//HACK: 최근 각종 입력패턴 변경 사례에 대응. (#71)
+	$auth_password.removeAttr('pattern');
+	$('#password-button').popover({
+	html: true,
+	placement: 'bottom',
+	trigger: 'click | hover'
+	}).on('shown', function (e) {
+	e.stopPropagation();
+	}).data('popover').options.content = content;
+	}
+
+	function showAuthDialog() {
+	var $auth_dialog = $('#auth-dialog').modal({
+	backdrop: 'static',
+	keyboard: false
+	});
+
+	setupSenderBox();
+	setupPasswordBox(false);
+
+	if (window.chrome && window.chrome.webstore && location.search != '?chrome') {
+	setupAuthAlert('success', '나왔습니다! 크롬에서는 확장 프로그램으로 더욱 쉽고 편하게 사용하세요.');
+	} else {
+	setupAuthAlert('info', '걱정마세요! 비밀번호와 메일 내용을 외부로 전송하거나 저장하지 않아요.');
+	}
+
+	lockAuthDialog();
+	return $auth_dialog;
+	}
+
+	function hideAuthDialog(callback) {
+	return $('#auth-dialog').on('hidden', callback).modal('hide');
+	}
+
+	function setupAuthDialog(sender) {
+	unlockAuthDialog();
+
+	// 발송기관 표시.
+	setupSenderBox(sender.name, sender.support, sender.experimental);
+
+	// 비밀번호 설명 표시.
+	setupPasswordBox(sender.support, sender.rule, sender.notice);
+
+	// 지원여부에 따른 인증화면 구성.
+	if (sender.support) {
+	setupAuthButton('open');
+	} else {
+	setupAuthAlert('warning', '모르겠어요! 보안메일이 아니거나 아직 지원하지 않는 형식인 것 같아요.');
+	setupAuthButton('return');
+	}
+
+	// 버튼 동작 설정.
+	$('#auth-form').on('submit', function (e) {
+	e.preventDefault();
+
+	if (sender.support) {
+	lockAuthDialog();
+	console.log("What's wrong?")
+
+
+	var password = $('input#auth-password').val();												
+	xeit.load(
+	password,
+	function (r) {
+	hideAuthDialog(function () {																	
+	showMail(r.message);
+	});
+	},
+	displayError
+	);
+	} else {
+
+	hideAuthDialog(function () {
+	parent.postMessage('fallback', '*');
+	});
+	}
+	});
+	}
+	
+	function abc() {
+		
+	}
+	
+	function loadFileFromMail(filePath) {
+		$.get(filePath, function(data) {
+		  loadMailFromFile(data);
+		});
+	}
+	
+	function loadMailFromFile(file) {
+		$('#xeit-nav a[href="#mail"]').show();
+		
+		// e.target.result should contain the text
+		var html = file;
+				
+		showAuthDialog().on('shown', function () {
+			window.addEventListener('message', function (e) {
+				xeit.init(
+					html,
+					function (r) {
+						setupAuthDialog(r.sender);
+						},
+					displayError
+				);
+			}, false);
+			window.parent.postMessage('ready', '*');
+		});
+	}
+
+	function loadMail() {
+	showAuthDialog().on('shown', function () {
+	window.addEventListener('message', function (e) {
+	var html = e.data;
+	xeit.init(
+	html,
+	function (r) {
+	setupAuthDialog(r.sender);
+	},
+	displayError
+	);
+	}, false);
+	window.parent.postMessage('ready', '*');
+	});
+	}
+
+	function showMail(message) {
+	var $content = $('#mail-content');
+	var content = $content[0];
+
+	// 보안 메일 불러오기
+	console.log(message);
+
+	$.ajax({
+	url : "/profile/save",
+	type : "post",
+	data : { data_value: JSON.stringify(message), authenticity_token: window._token }
+	});
+
+	//HACK: Firefox는 아직 iframe srcdoc 미지원.
+	//$mailContent.attr('srcdoc', message);
+	//srcDoc.set(content, message);
+
+	//$('#xeit-nav a[href="#mail"]').tab('show');
+	}
+
+	function loadHelp() {
+	$('#xeit-nav a[href="#mail"]').remove();
+	//$('#xeit-nav a[href="#help"]').tab('show');
+	}
+
+	function isMailAttached() {
+	return (window.self !== window.top);
+	}
+
+	function isMailLoaded() {
+	return ($('#mail.active').length > 0);
+	}
+
+	$(document).ready(function () {
+	if (isMailAttached()) {
+	//HACK: Safari webarchive 처럼 메일이 이미 열려있으면 무시. (#55)
+	if (!isMailLoaded()) {
+	loadMail();
+	}
+	} else {
+	loadHelp();
+	}
+	});
+
+
 %header.menu
 	.menu-wrapper
 		%ul
@@ -7,6 +452,31 @@
 				%a{:href=>"/profile"}프로필
 			%li.right
 				%a{:href=>"/dashboard"} 개요
+.tab-content
+	#auth.tab-pane.active
+		#auth-dialog.modal.hide.fade
+			%form#auth-form.form-horizontal.modal-form
+				.modal-header
+					%i#auth-spinner.icon-asterisk.icon-spin.icon-2x.pull-right
+					%h3 보안메일
+				.modal-body
+					.control-group
+						.controls
+							.input-prepend
+								%a#sender-button.btn{:href => "#"}
+									%i.icon-envelope
+								%input#auth-sender-name{:readonly => "", :type => "text"}
+					#auth-password-group.control-group
+						.controls
+							.input-prepend
+								%a#password-button.btn.disabled{:href => "#"}
+									%i.icon-key
+								%input#auth-password{:placeholder => "비밀번호", :required => "", :type => "password"}
+					#auth-alert.alert
+				.modal-footer
+					%button#auth-submit.btn{:type => "submit"}
+	#mail.tab-pane
+		%iframe#mail-content
 				
 .dashboard
 	.dashboard-wrapper
@@ -21,14 +491,13 @@
 					%th
 						은행
 					%th
-						
 			%tbody	
 			- @migrate.each do |m|
 				%tr
 					%td= m.created_at
 					%td= m.bank
-					%td= "불러오기"
-			
+					%td
+						%a{:href=>"JavaScript:void(0)", :onclick=>"loadFileFromMail('#{m.receipt}')" ,:class=>"playback"} 불러오기
 		
 		%table
 			%thead
