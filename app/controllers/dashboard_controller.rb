@@ -1,5 +1,5 @@
 class DashboardController < ApplicationController
-  PROCESS = false
+  PROCESS = true
   
   def index
     @budget = Budget.where(:user_id => 1)
@@ -7,8 +7,8 @@ class DashboardController < ApplicationController
     if PROCESS
       MailCheckerJob.perform_later 1
     end
-    
+        
     # For production -
-    #MailCheckerJob.set(wait: 24.hour).perform_later 1
+    # MailCheckerJob.set(wait: 24.hour).perform_later 1
   end
 end

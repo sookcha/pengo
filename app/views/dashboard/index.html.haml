@@ -6,7 +6,7 @@
 				%a{:href=>"/profile"}프로필
 			%li.right.selected
 				%a{:href=>"/dashboard"} 개요
-.dashboard
+.dashboard		
 	.dashboard-wrapper
 		- if Time.now.to_date - 1 != @budget.last.trans_date.to_date
 			.notice			
