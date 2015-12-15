@@ -73,7 +73,7 @@ class ProfileController < ApplicationController
         
         elsif b.trans_store.include? "승차권"
           transport += b.trans_amount
-          
+
         end
       end
     end
@@ -90,7 +90,7 @@ class ProfileController < ApplicationController
         render :text => "type,percentage\r\n편의점+마트," + martPercentage.to_s + "\r\n음식," + foodPercentage.to_s  + "\r\n인터넷서비스," + internetServicesPercentage.to_s + "\r\n교통," + transportPercentage.to_s + "\r\n기타," + etcPercentage.to_s}
     end
   end
-    
+  
   def dailydata
     budget = Budget.recents.where(:user_id => 1, :trans_type=> "출금").group("strftime('%Y-%m-%d',trans_date)").sum(:trans_amount)
     dailyCSV = "date\tamount\r\n"
