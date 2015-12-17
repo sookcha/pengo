@@ -4,6 +4,15 @@ class ProfileController < ApplicationController
   def index
     @budget = Budget.where(:user_id => 1)
     @migrate = Migrate.where(:user_id => 1)
+        
+    @dateCollection = []
+    
+    Migrate.select(:trans_date).each_with_index do |m,i|
+      if m.trans_date != nil
+        @dateCollection[i] = m.trans_date.strftime("%Y-%m-%d")
+      end
+    end
+    
   end
   
   def update
@@ -65,10 +74,10 @@ class ProfileController < ApplicationController
         if b.trans_store.include? "마트" or b.trans_store.include? "GS" or b.trans_store.include? "CU" or b.trans_store.include? "세븐일레븐"
           mart += b.trans_amount
       
-        elsif b.trans_store.include? "파리바게뜨" or b.trans_store.include? "푸드"
+        elsif b.trans_store.include? "파리바게뜨" or b.trans_store.include? "푸드" or b.trans_store.include? "써브웨이"
           food += b.trans_amount
         
-        elsif b.trans_store.include? "ITUNES.CO" or b.trans_store.include? "PG" or b.trans_store.include? "세븐일레븐"
+        elsif b.trans_store.include? "ITUNES.CO" or b.trans_store.include? "PG" or b.trans_store.include? "G마켓"
           internetServices += b.trans_amount
         
         elsif b.trans_store.include? "승차권"
@@ -83,11 +92,12 @@ class ProfileController < ApplicationController
     internetServicesPercentage = (internetServices.fdiv(totalPay).round(2)*100).to_i
     transportPercentage = (transport.fdiv(totalPay).round(2)*100).to_i
     
-    etcPercentage = 100 - (martPercentage + internetServicesPercentage + foodPercentage)
+    etcPercentage = 100 - (martPercentage + internetServicesPercentage + foodPercentage + transportPercentage)
     
     respond_to do |format|
       format.csv {
-        render :text => "type,percentage\r\n편의점+마트," + martPercentage.to_s + "\r\n음식," + foodPercentage.to_s  + "\r\n인터넷서비스," + internetServicesPercentage.to_s + "\r\n교통," + transportPercentage.to_s + "\r\n기타," + etcPercentage.to_s}
+        render :text => "type,percentage\r\n편의점+마트," + martPercentage.to_s + "\r\n음식," + foodPercentage.to_s  + "\r\n인터넷서비스," + internetServicesPercentage.to_s + "\r\n교통," + transportPercentage.to_s + "\r\n기타," + etcPercentage.to_s
+      }
     end
   end
   

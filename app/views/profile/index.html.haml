@@ -491,10 +491,10 @@
 					%th
 						은행
 					%th
-			%tbody	
+			%tbody
 			- @migrate.each do |m|
 				%tr
-					%td= m.created_at
+					%td= m.trans_date
 					%td= m.bank
 					%td
 						%a{:href=>"JavaScript:void(0)", :onclick=>"loadFileFromMail('#{m.receipt}')"} 불러오기
