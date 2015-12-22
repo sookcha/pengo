@@ -8,6 +8,14 @@
 	margin: 0;
 }
 
+span.income {
+	color: green;
+}
+
+span.expense {
+	color: red;
+}
+
 header.menu {
 	max-width: 100%;
 	background-color: #F2F2F2;
@@ -24,12 +32,12 @@ header.menu {
 	margin: 0;
 	padding: 0;
 	font-size: 1.55em;
-	
+
 }
 
 .menu ul li {
 	list-style-type: none;
-	display: inline;	
+	display: inline;
 }
 
 li.right {
@@ -38,7 +46,7 @@ li.right {
 }
 
 .dashboard {
-	width: 100%;	
+	width: 100%;
 }
 
 .dashboard-wrapper {
@@ -51,7 +59,7 @@ li.right {
 	padding: 0.5em;
 	background-color: #86B298;
 	color: #FFF;
-	border: 2.5px solid #63997A;	
+	border: 2.5px solid #63997A;
 	border-radius: 3px;
 	margin: 0 0 1.5em 0;
 }
@@ -80,7 +88,7 @@ td {
 	border: 1px solid silver;
 }
 th {
-	border: 1px solid silver;	
+	border: 1px solid silver;
 }
 
 a {
@@ -94,7 +102,7 @@ a {
 
 .right a:hover {
 	border-bottom: 2px solid #E5846E;
-	
+
 }
 
 .last-update {

@@ -1,3 +1,10 @@
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://coffeescript.org/
+$(document).ready ->
+  $.ajax 'profile/incomedata',
+    type: 'GET'
+    dataType: 'text'
+    error: (request, status, errorThrown) ->
+        console.log("error: #{status}")
+    success: (data, status, reuqest) ->
+      data = $.parseJSON(data)
+      $("span.income").text(data["income"])
+      $("span.expense").text(data["expense"])

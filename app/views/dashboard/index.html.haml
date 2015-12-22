@@ -2,23 +2,27 @@
 	.menu-wrapper
 		%ul
 			%img{:src=>"/pengo-logo.svg", :width=>"130px"}
-			%li.right 
+			%li.right
 				%a{:href=>"/profile"}프로필
 			%li.right.selected
 				%a{:href=>"/dashboard"} 개요
 .dashboard
 	.dashboard-wrapper
 		- if Time.now.to_date - 1 != @budget.last.trans_date.to_date
-			.notice			
+			.notice
 				%h1 지출 내역이 오래됐나요? 지금 업데이트 하세요
 				%span.update
-					%a{:href=>"/profile/update"} 업데이트		
+					%a{:href=>"/profile/update"} 업데이트
 		%span.last-update= "최종 업데이트: " + @budget.last.trans_date.to_date.to_s
 		%h1 종합 리포트 - 최근 14일
 		#pie-chart
+		%h2 입출금 현황
+		%span.income
+		%span.divider -
+		%span.expense
 		%h2 사용금액
 		#bar-chart
-		
+
 :javascript
 	var width = 850,
 	    height = 400,
@@ -39,26 +43,26 @@
 	    .attr("height", height)
 	  .append("g")
 	    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-	
+
 	d3.csv("/profile/data", function(error, data) {
 	  var g = svg1.selectAll(".arc")
 	      .data(pie(data))
 	    .enter().append("g")
 	      .attr("class", "arc");
-		
+
 	  g.append("path")
 	      .attr("d", arc)
 	      .style("fill", function(d) { return color(d.data.type); });
-		
+
 	  g.append("text")
 	      .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
 	      .attr("dy", ".35em")
 	      .style("text-anchor", "middle")
 	      .text(function(d) { return d.data.type; });
-	});	
-	
+	});
+
 	// BAR-CHART
-	
+
 	var margin = {top: 20, right: 20, bottom: 30, left: 40},
 	    width = 850 - margin.left - margin.right,
 	    height = 300 - margin.top - margin.bottom;
@@ -119,4 +123,3 @@
 	  d.amount = +d.amount;
 	  return d;
 	}
-	

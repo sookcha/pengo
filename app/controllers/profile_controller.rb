@@ -121,9 +121,8 @@ class ProfileController < ApplicationController
     respond_to do |format|
       format.json {
         firstId = Budget.recents.first.id
-        balance = Budget.where(:id => firstId).first  .trans_balance + totalIncome
-        render :text => "{'income': '"+ balance.to_s + "','expense': '"+ totalExpense.to_s + "'}"
-        #render :text => Budget.where(:id => 38).first.trans_balance
+        balance = Budget.where(:id => firstId).first.trans_balance + totalIncome
+        render :text => '{"income": "'+ balance.to_s + '","expense": "'+ totalExpense.to_s + '"}'
       }
     end
   end
