@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'profile/update'
   get '/profile/data', :defaults => {:format => 'csv'}
   get 'profile/dailydata' => "profile#dailydata"
+  get 'profile/incomedata' => "profile#incomedata", :defaults => {:format => 'json'}
 
   devise_for :users
   

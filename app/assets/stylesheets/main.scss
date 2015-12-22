@@ -1,15 +1,14 @@
 @import url(https://fonts.googleapis.com/css?family=Lato);
 
 body {
-	
+
 }
 
 .wrapper-full.header {
-	background-image: url("https://images.unsplash.com/photo-1430598825529-927d770c194f?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&s=04f2d45d04ca46424891d0cdd2766108");
 	background-position: center;
 	background-size: cover;
 	padding-bottom: 10em;
-	
+
 }
 
 .wrapper-full.header {
@@ -27,7 +26,7 @@ body {
   width: 100%;
   background-color: #FFF;
   color: #000;
-	
+
 }
 
 .wrapper-full h1 {
@@ -38,7 +37,7 @@ body {
 }
 
 header .wrapper span {
-	color: #FFF;
+	color: #000;
 	padding: 2em 0;
 	font-size: 3em;
 	display: inline-block;
