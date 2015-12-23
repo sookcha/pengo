@@ -8,18 +8,19 @@
 				%a{:href=>"/dashboard"} 개요
 .dashboard
 	.dashboard-wrapper
-		- if Time.now.to_date - 1 != @budget.last.trans_date.to_date
-			.notice
-				%h1 지출 내역이 오래됐나요? 지금 업데이트 하세요
-				%span.update
-					%a{:href=>"/profile/update"} 업데이트
-		%span.last-update= "최종 업데이트: " + @budget.last.trans_date.to_date.to_s
+		- if @budget.last != nil
+			- if Time.now.to_date - 1 != @budget.last.trans_date.to_date
+				.notice
+					%h1 지출 내역이 오래됐나요? 지금 업데이트 하세요
+					%span.update
+						%a{:href=>"/profile/update"} 업데이트
+			%span.last-update= "최종 업데이트: " + @budget.last.trans_date.to_date.to_s
 		%h1 종합 리포트 - 최근 14일
 		#pie-chart
-		%h2 입출금 현황
-		%span.income
-		%span.divider -
-		%span.expense
+		%h2 입출금 현황 - 최근 14일
+		%span.inout.income
+		%span.inout.divider -
+		%span.inout.expense
 		%h2 사용금액
 		#bar-chart
 

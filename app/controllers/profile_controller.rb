@@ -12,7 +12,6 @@ class ProfileController < ApplicationController
         @dateCollection[i] = m.trans_date.strftime("%Y-%m-%d")
       end
     end
-
   end
 
   def update

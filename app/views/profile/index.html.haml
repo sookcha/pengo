@@ -333,11 +333,11 @@
 	console.log("What's wrong?")
 
 
-	var password = $('input#auth-password').val();												
+	var password = $('input#auth-password').val();
 	xeit.load(
 	password,
 	function (r) {
-	hideAuthDialog(function () {																	
+	hideAuthDialog(function () {
 	showMail(r.message);
 	});
 	},
@@ -351,23 +351,23 @@
 	}
 	});
 	}
-	
+
 	function abc() {
-		
+
 	}
-	
+
 	function loadFileFromMail(filePath) {
 		$.get(filePath, function(data) {
 		  loadMailFromFile(data);
 		});
 	}
-	
+
 	function loadMailFromFile(file) {
 		$('#xeit-nav a[href="#mail"]').show();
-		
+
 		// e.target.result should contain the text
 		var html = file;
-				
+
 		showAuthDialog().on('shown', function () {
 			window.addEventListener('message', function (e) {
 				xeit.init(
@@ -402,15 +402,11 @@
 	var $content = $('#mail-content');
 	var content = $content[0];
 
-	// 보안 메일 불러오기
-	console.log(message);
-
-	$.ajax({
+	var request = $.ajax({
 	url : "/profile/save",
 	type : "post",
 	data : { data_value: JSON.stringify(message), authenticity_token: window._token }
 	});
-
 	//HACK: Firefox는 아직 iframe srcdoc 미지원.
 	//$mailContent.attr('srcdoc', message);
 	//srcDoc.set(content, message);
@@ -448,7 +444,7 @@
 		%ul
 			%li
 				%img{:src=>"/pengo-logo.svg", :width=>"130px"}
-			%li.right.selected 
+			%li.right.selected
 				%a{:href=>"/profile"}프로필
 			%li.right
 				%a{:href=>"/dashboard"} 개요
@@ -477,7 +473,7 @@
 					%button#auth-submit.btn{:type => "submit"}
 	#mail.tab-pane
 		%iframe#mail-content
-				
+
 .dashboard
 	.dashboard-wrapper
 		%h1 내역
@@ -498,7 +494,7 @@
 					%td= m.bank
 					%td
 						%a{:href=>"JavaScript:void(0)", :onclick=>"loadFileFromMail('#{m.receipt}')"} 불러오기
-		
+
 		%table
 			%thead
 				%tr
@@ -520,4 +516,3 @@
 						%td= b.trans_store
 						%td= b.trans_amount
 						%td= b.trans_balance
-		
